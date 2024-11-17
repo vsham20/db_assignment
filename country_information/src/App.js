@@ -8,7 +8,11 @@ const App = () => {
   const [rowData, setRowData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [favorites, setFavorites] = useState(new Set());
+  const [favorites, setFavorites] = useState(() => {
+    // Retrieve favorites from localStorage on initial load
+  const savedFavorites = localStorage.getItem('favoriteCountries');
+  return savedFavorites ? new Set(JSON.parse(savedFavorites)) : new Set();
+  });
   const [showFavoritesModal, setShowFavoritesModal] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState(null);
 
@@ -17,8 +21,8 @@ const App = () => {
       headerName: 'Flag',
       field: 'flags.png',
       cellRenderer: FlagRenderer,
-      minWidth: 80,  // Reduce the minimum width further
-      maxWidth: 80,  // Ensure consistency
+      minWidth: 80,
+      maxWidth: 80,
       cellStyle: { textAlign: 'center' },
     },
     {
@@ -57,9 +61,7 @@ const App = () => {
       field: 'population',
       sortable: true,
       filter: true,
-      cellStyle: {
-        textAlign: 'right',
-      },
+      cellStyle: { textAlign: 'right' },
     },
   ]);
 
@@ -76,6 +78,11 @@ const App = () => {
       })
       .catch((error) => console.error('Error fetching data:', error));
   }, []);
+
+  useEffect(() => {
+    // Save favorites to localStorage whenever they change
+    localStorage.setItem('favoriteCountries', JSON.stringify(Array.from(favorites)));
+  }, [favorites]);
 
   const handleSearch = (e) => {
     const query = e.target.value.toLowerCase();
@@ -138,16 +145,8 @@ const App = () => {
   return (
     <div style={{ padding: '20px', backgroundColor: '#f4f4f4', minHeight: '100vh' }}>
       <h2 style={{ textAlign: 'center', marginBottom: '20px', color: '#333' }}>Country Explorer</h2>
-
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginBottom: '20px',
-          gap: '10px',
-        }}
-      >
+      {/* Search and Favorites Button */}
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px', gap: '10px' }}>
         <input
           type="text"
           placeholder="Search by country name, language, or currency..."
@@ -177,6 +176,7 @@ const App = () => {
         </button>
       </div>
 
+      {/* Grid and Modal Logic */}
       <div
         className="ag-theme-alpine"
         style={{
@@ -204,6 +204,7 @@ const App = () => {
         />
       </div>
 
+      {/* Details Modal */}
       {selectedCountry && (
         <div
           style={{
@@ -257,6 +258,7 @@ const App = () => {
         </div>
       )}
 
+      {/* Favorites Modal */}
       {showFavoritesModal && (
         <div
           style={{
@@ -308,6 +310,7 @@ const App = () => {
         </div>
       )}
 
+      {/* Modal Background */}
       {(selectedCountry || showFavoritesModal) && (
         <div
           onClick={() => {
