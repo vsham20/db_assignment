@@ -36,7 +36,7 @@ Installation
         - git clone https://github.com/vsham20/db_assignment.git
         - cd db_assignment/
         - git checkout master
-        - cd country_information 
+        - cd country_information
     - Install dependencies:
         - npm install 
     - Run the app:
