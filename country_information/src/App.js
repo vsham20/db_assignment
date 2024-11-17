@@ -8,6 +8,7 @@ const App = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCountry, setSelectedCountry] = useState(null);
+  const [favorites, setFavorites] = useState(new Set());
   const [columnDefs] = useState([
     {
       headerName: 'Flag',
@@ -74,7 +75,6 @@ const App = () => {
       .catch((error) => console.error('Error fetching data:', error));
   }, []);
 
-  // Handle search functionality
   const handleSearch = (e) => {
     const query = e.target.value.toLowerCase();
     setSearchQuery(query);
@@ -103,8 +103,22 @@ const App = () => {
     setSelectedCountry(null);
   };
 
+  const toggleFavorite = (countryName) => {
+    setFavorites((prevFavorites) => {
+      const newFavorites = new Set(prevFavorites);
+      if (newFavorites.has(countryName)) {
+        newFavorites.delete(countryName);
+      } else {
+        newFavorites.add(countryName);
+      }
+      return newFavorites;
+    });
+  };
+
   const renderCountryDetails = (country) => {
     if (!country) return null;
+
+    const isFavorite = favorites.has(country.name.common);
 
     return (
       <div style={{ lineHeight: '1.6' }}>
@@ -121,6 +135,20 @@ const App = () => {
         <p><strong>Timezones:</strong> {country.timezones?.join(', ')}</p>
         <p><strong>Borders:</strong> {country.borders?.join(', ') || 'No Borders'}</p>
         <img src={country.flags.png} alt={`${country.name.common} Flag`} style={{ width: '100px', marginTop: '10px' }} />
+        <button
+          onClick={() => toggleFavorite(country.name.common)}
+          style={{
+            marginTop: '10px',
+            padding: '10px 20px',
+            backgroundColor: isFavorite ? '#ffc107' : '#007bff',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+          }}
+        >
+          {isFavorite ? 'Unmark Favorite' : 'Mark as Favorite'}
+        </button>
       </div>
     );
   };
@@ -225,6 +253,16 @@ const App = () => {
           }}
         />
       )}
+
+      {/* Display Favorites */}
+      <div style={{ marginTop: '20px', textAlign: 'center' }}>
+        <h3>Favorite Countries</h3>
+        <ul>
+          {Array.from(favorites).map((favorite) => (
+            <li key={favorite}>{favorite}</li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
