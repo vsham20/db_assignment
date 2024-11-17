@@ -9,6 +9,7 @@ const App = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [favorites, setFavorites] = useState(new Set());
+  const [showFavoritesModal, setShowFavoritesModal] = useState(false);
   const [columnDefs] = useState([
     {
       headerName: 'Flag',
@@ -139,6 +140,10 @@ const App = () => {
     );
   };
 
+  const closeFavoritesModal = () => {
+    setShowFavoritesModal(false);
+  };
+
   return (
     <div style={{ padding: '20px', backgroundColor: '#f4f4f4', minHeight: '100vh' }}>
       <h2 style={{ textAlign: 'center', marginBottom: '20px', color: '#333' }}>Country Explorer</h2>
@@ -159,6 +164,23 @@ const App = () => {
           margin: '0 auto',
         }}
       />
+
+      <button
+        onClick={() => setShowFavoritesModal(true)}
+        style={{
+          display: 'block',
+          margin: '0 auto 20px',
+          padding: '10px 20px',
+          backgroundColor: '#007bff',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+          fontSize: '16px',
+        }}
+      >
+        View Favorites
+      </button>
 
       <div
         className="ag-theme-alpine"
@@ -241,6 +263,58 @@ const App = () => {
         </div>
       )}
 
+      {/* Modal for displaying favorites */}
+      {showFavoritesModal && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            backgroundColor: 'white',
+            padding: '20px',
+            borderRadius: '8px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+            zIndex: 1000,
+            width: '400px',
+            maxHeight: '80vh',
+            overflowY: 'auto',
+          }}
+        >
+          <button
+            onClick={closeFavoritesModal}
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              backgroundColor: 'transparent',
+              border: 'none',
+              fontSize: '18px',
+              cursor: 'pointer',
+            }}
+          >
+            &times;
+          </button>
+          <h3 style={{ textAlign: 'center', marginBottom: '15px' }}>Favorite Countries</h3>
+          <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
+            {Array.from(favorites).map((favorite) => (
+              <li
+                key={favorite}
+                style={{
+                  background: '#f4f4f4',
+                  marginBottom: '10px',
+                  padding: '10px',
+                  borderRadius: '5px',
+                  textAlign: 'center',
+                }}
+              >
+                {favorite}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {/* Modal Background */}
       {selectedCountry && (
         <div
@@ -257,15 +331,20 @@ const App = () => {
         />
       )}
 
-      {/* Display Favorites */}
-      <div style={{ marginTop: '20px', textAlign: 'center' }}>
-        <h3>Favorite Countries</h3>
-        <ul>
-          {Array.from(favorites).map((favorite) => (
-            <li key={favorite}>{favorite}</li>
-          ))}
-        </ul>
-      </div>
+      {showFavoritesModal && (
+        <div
+          onClick={closeFavoritesModal}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 999,
+          }}
+        />
+      )}
     </div>
   );
 };
