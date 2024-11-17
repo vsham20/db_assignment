@@ -7,9 +7,10 @@ const App = () => {
   const [rowData, setRowData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCountry, setSelectedCountry] = useState(null);
   const [favorites, setFavorites] = useState(new Set());
   const [showFavoritesModal, setShowFavoritesModal] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+
   const [columnDefs] = useState([
     {
       headerName: 'Flag',
@@ -21,7 +22,7 @@ const App = () => {
       cellStyle: { textAlign: 'center' },
     },
     {
-      headerName: 'Name',
+      headerName: 'Country Name',
       field: 'name.common',
       sortable: true,
       filter: true,
@@ -96,10 +97,6 @@ const App = () => {
     setFilteredData(filtered);
   };
 
-  const onRowClicked = (event) => {
-    setSelectedCountry(event.data);
-  };
-
   const closeModal = () => {
     setSelectedCountry(null);
   };
@@ -118,8 +115,6 @@ const App = () => {
 
   const renderCountryDetails = (country) => {
     if (!country) return null;
-
-    const isFavorite = favorites.has(country.name.common);
 
     return (
       <div style={{ lineHeight: '1.6' }}>
@@ -140,47 +135,47 @@ const App = () => {
     );
   };
 
-  const closeFavoritesModal = () => {
-    setShowFavoritesModal(false);
-  };
-
   return (
     <div style={{ padding: '20px', backgroundColor: '#f4f4f4', minHeight: '100vh' }}>
       <h2 style={{ textAlign: 'center', marginBottom: '20px', color: '#333' }}>Country Explorer</h2>
 
-      <input
-        type="text"
-        placeholder="Search by country name, language, or currency..."
-        value={searchQuery}
-        onChange={handleSearch}
+      <div
         style={{
-          width: '80%',
-          padding: '10px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
           marginBottom: '20px',
-          fontSize: '16px',
-          borderRadius: '5px',
-          border: '1px solid #ccc',
-          display: 'block',
-          margin: '0 auto',
-        }}
-      />
-
-      <button
-        onClick={() => setShowFavoritesModal(true)}
-        style={{
-          display: 'block',
-          margin: '0 auto 20px',
-          padding: '10px 20px',
-          backgroundColor: '#007bff',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
-          fontSize: '16px',
+          gap: '10px',
         }}
       >
-        View Favorites
-      </button>
+        <input
+          type="text"
+          placeholder="Search by country name, language, or currency..."
+          value={searchQuery}
+          onChange={handleSearch}
+          style={{
+            width: '50%',
+            padding: '10px',
+            fontSize: '16px',
+            borderRadius: '5px',
+            border: '1px solid #ccc',
+          }}
+        />
+        <button
+          onClick={() => setShowFavoritesModal(true)}
+          style={{
+            padding: '10px 20px',
+            backgroundColor: '#007bff',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontSize: '16px',
+          }}
+        >
+          View Favorites
+        </button>
+      </div>
 
       <div
         className="ag-theme-alpine"
@@ -188,7 +183,7 @@ const App = () => {
           height: '600px',
           width: '1000px',
           margin: 'auto',
-          marginTop: '20px',
+          marginTop: '0px',
           borderRadius: '8px',
           overflow: 'hidden',
           boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
@@ -205,11 +200,10 @@ const App = () => {
           animateRows={true}
           pagination={true}
           paginationPageSize={10}
-          onRowClicked={onRowClicked}
+          onRowClicked={(event) => setSelectedCountry(event.data)}
         />
       </div>
 
-      {/* Modal for displaying selected country details */}
       {selectedCountry && (
         <div
           style={{
@@ -263,7 +257,6 @@ const App = () => {
         </div>
       )}
 
-      {/* Modal for displaying favorites */}
       {showFavoritesModal && (
         <div
           style={{
@@ -282,7 +275,7 @@ const App = () => {
           }}
         >
           <button
-            onClick={closeFavoritesModal}
+            onClick={() => setShowFavoritesModal(false)}
             style={{
               position: 'absolute',
               top: '10px',
@@ -315,25 +308,12 @@ const App = () => {
         </div>
       )}
 
-      {/* Modal Background */}
-      {selectedCountry && (
+      {(selectedCountry || showFavoritesModal) && (
         <div
-          onClick={closeModal}
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            zIndex: 999,
+          onClick={() => {
+            setSelectedCountry(null);
+            setShowFavoritesModal(false);
           }}
-        />
-      )}
-
-      {showFavoritesModal && (
-        <div
-          onClick={closeFavoritesModal}
           style={{
             position: 'fixed',
             top: 0,
