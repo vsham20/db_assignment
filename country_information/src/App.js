@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
+import FlagRenderer from './flagRenderer.js';
 
 const App = () => {
   const [rowData, setRowData] = useState([]);
@@ -14,12 +15,11 @@ const App = () => {
   const [columnDefs] = useState([
     {
       headerName: 'Flag',
-      field: 'flag',
-      cellRendererFramework: (params) => (
-        <img src={params.value} alt="Flag" style={{ width: '40px', height: '30px' }} />
-      ),
-      width: 100,
-      cellStyle: { textAlign: 'center' },
+      field: 'flags.png',
+      cellRenderer: FlagRenderer,
+      minWidth: 80,  // Reduce the minimum width further
+    maxWidth: 80,  // Ensure consistency
+    cellStyle: { textAlign: 'center' },
     },
     {
       headerName: 'Country Name',

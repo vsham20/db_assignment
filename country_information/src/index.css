@@ -11,3 +11,15 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.imgSpanLogo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.logo {
+  max-width: 100%;  /* Ensure the image width fits the cell */
+  max-height: 20px; /* Limit the height to keep flags uniform */
+  object-fit: contain; /* Maintain aspect ratio */
+}
