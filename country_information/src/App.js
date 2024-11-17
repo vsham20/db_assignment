@@ -135,20 +135,6 @@ const App = () => {
         <p><strong>Timezones:</strong> {country.timezones?.join(', ')}</p>
         <p><strong>Borders:</strong> {country.borders?.join(', ') || 'No Borders'}</p>
         <img src={country.flags.png} alt={`${country.name.common} Flag`} style={{ width: '100px', marginTop: '10px' }} />
-        <button
-          onClick={() => toggleFavorite(country.name.common)}
-          style={{
-            marginTop: '10px',
-            padding: '10px 20px',
-            backgroundColor: isFavorite ? '#ffc107' : '#007bff',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer',
-          }}
-        >
-          {isFavorite ? 'Unmark Favorite' : 'Mark as Favorite'}
-        </button>
       </div>
     );
   };
@@ -233,7 +219,24 @@ const App = () => {
           >
             &times;
           </button>
-          <h3>Country Details</h3>
+          <h3>
+            Country Details
+            <button
+              onClick={() => toggleFavorite(selectedCountry.name.common)}
+              style={{
+                marginLeft: '15px',
+                padding: '8px 16px',
+                backgroundColor: favorites.has(selectedCountry.name.common) ? '#ffc107' : '#007bff',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '5px',
+                cursor: 'pointer',
+                fontSize: '14px',
+              }}
+            >
+              {favorites.has(selectedCountry.name.common) ? 'Unmark Favorite' : 'Mark as Favorite'}
+            </button>
+          </h3>
           {renderCountryDetails(selectedCountry)}
         </div>
       )}
